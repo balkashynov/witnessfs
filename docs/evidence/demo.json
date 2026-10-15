@@ -1,0 +1,490 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-10-15T18:13:09.386149+00:00",
+  "platform": "Linux-6.10.14-linuxkit-aarch64-with-glibc2.36",
+  "execution": "Real Linux FUSE and Git; deterministic scripted tasks, no LLM session.",
+  "fixture_sha256": {
+    "client.py": "95da8c8bbf6bc23a78b7288ff866d0b5d6131ba22b52a889482cb786acf55280",
+    "config.json": "842c8b360c978478cca5a3b3d8e3e7dbfd358a4244d20db5ac383ad42c0d4c30"
+  },
+  "git": {
+    "migrate": [
+      {
+        "label": "migrate task",
+        "command": [
+          "python3",
+          "-B",
+          "$REPO/examples/timeout/task_migrate.py"
+        ],
+        "exit_code": 0,
+        "stdout": "Migrated configuration to milliseconds; preserved the 30 second default.\n",
+        "stderr": ""
+      },
+      {
+        "label": "default test",
+        "command": [
+          "python3",
+          "-B",
+          "-c",
+          "from client import default_timeout; actual=default_timeout(); print(f'default: {actual:g}s (expected 30s)'); assert actual == 30"
+        ],
+        "exit_code": 0,
+        "stdout": "default: 30s (expected 30s)\n",
+        "stderr": ""
+      }
+    ],
+    "retry": [
+      {
+        "label": "retry task",
+        "command": [
+          "python3",
+          "-B",
+          "$REPO/examples/timeout/task_retry.py"
+        ],
+        "exit_code": 0,
+        "stdout": "Read unit=seconds; wrote retry timeout=60.\n",
+        "stderr": ""
+      },
+      {
+        "label": "retry test",
+        "command": [
+          "python3",
+          "-B",
+          "-c",
+          "from client import retry_timeout; actual=retry_timeout(); print(f'retry: {actual:g}s (expected 60s)'); assert actual == 60, f'expected 60 seconds, got {actual:g}'"
+        ],
+        "exit_code": 0,
+        "stdout": "retry: 60s (expected 60s)\n",
+        "stderr": ""
+      }
+    ],
+    "merge": {
+      "label": "git merge --no-edit retry",
+      "command": [
+        "git",
+        "merge",
+        "--no-edit",
+        "retry"
+      ],
+      "exit_code": 0,
+      "stdout": "Merge made by the 'ort' strategy.\n retry.json | 1 +\n 1 file changed, 1 insertion(+)\n create mode 100644 retry.json\n",
+      "stderr": ""
+    },
+    "combined_tests": [
+      {
+        "label": "default test",
+        "command": [
+          "python3",
+          "-B",
+          "-c",
+          "from client import default_timeout; actual=default_timeout(); print(f'default: {actual:g}s (expected 30s)'); assert actual == 30"
+        ],
+        "exit_code": 0,
+        "stdout": "default: 30s (expected 30s)\n",
+        "stderr": ""
+      },
+      {
+        "label": "retry test",
+        "command": [
+          "python3",
+          "-B",
+          "-c",
+          "from client import retry_timeout; actual=retry_timeout(); print(f'retry: {actual:g}s (expected 60s)'); assert actual == 60, f'expected 60 seconds, got {actual:g}'"
+        ],
+        "exit_code": 1,
+        "stdout": "retry: 0.06s (expected 60s)\n",
+        "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nAssertionError: expected 60 seconds, got 0.06\n"
+      }
+    ],
+    "diff": "a7b5e93 Merge branch 'retry'\n\n retry.json | 1 +\n 1 file changed, 1 insertion(+)\n"
+  },
+  "witness": {
+    "migrate": [
+      {
+        "label": "migrate task",
+        "command": [
+          "python3",
+          "-B",
+          "$REPO/examples/timeout/task_migrate.py"
+        ],
+        "exit_code": 0,
+        "stdout": "Migrated configuration to milliseconds; preserved the 30 second default.\n",
+        "stderr": ""
+      },
+      {
+        "label": "default test",
+        "command": [
+          "python3",
+          "-B",
+          "-c",
+          "from client import default_timeout; actual=default_timeout(); print(f'default: {actual:g}s (expected 30s)'); assert actual == 30"
+        ],
+        "exit_code": 0,
+        "stdout": "default: 30s (expected 30s)\n",
+        "stderr": ""
+      }
+    ],
+    "retry": [
+      {
+        "label": "retry task",
+        "command": [
+          "python3",
+          "-B",
+          "$REPO/examples/timeout/task_retry.py"
+        ],
+        "exit_code": 0,
+        "stdout": "Read unit=seconds; wrote retry timeout=60.\n",
+        "stderr": ""
+      },
+      {
+        "label": "retry test",
+        "command": [
+          "python3",
+          "-B",
+          "-c",
+          "from client import retry_timeout; actual=retry_timeout(); print(f'retry: {actual:g}s (expected 60s)'); assert actual == 60, f'expected 60 seconds, got {actual:g}'"
+        ],
+        "exit_code": 0,
+        "stdout": "retry: 60s (expected 60s)\n",
+        "stderr": ""
+      }
+    ],
+    "retry_observations": [
+      {
+        "kind": "content",
+        "key": "n/0000000000000002",
+        "expected": "f886d68b65f8a06c70725c8fe87770d420badc9dc718cb440bb7786dc56f8c10",
+        "path": "/client.py",
+        "operation": "open"
+      },
+      {
+        "kind": "content",
+        "key": "n/0000000000000003",
+        "expected": "2137bf51f74a0f2e5e3c8594c15eb5119b5f6a33dfeee07909a5da5c897a093d",
+        "path": "/config.json",
+        "operation": "open"
+      },
+      {
+        "kind": "directory",
+        "key": "d/0000000000000001/",
+        "expected": "70a65a521654be493c23e011af9dac381bfd4f79e7901ea3c834b12c874d3d29",
+        "path": "/",
+        "operation": "readdir"
+      },
+      {
+        "kind": "metadata",
+        "key": "n/0000000000000001",
+        "expected": "001db112b1e0a88c416db05412ef00bd7f443c55300659e85c3ad6b0dcde0de0",
+        "path": "/",
+        "operation": "stat"
+      },
+      {
+        "kind": "metadata",
+        "key": "n/0000000000000002",
+        "expected": "c8bab9dd7c1e27146bd466060c9ad89cf80431438e783ffec5015bf53bd744f8",
+        "path": "/client.py",
+        "operation": "stat"
+      },
+      {
+        "kind": "metadata",
+        "key": "n/0000000000000003",
+        "expected": "7bb4838533aea27ac1e63c7d0f993136f7b65a2129e3eb9256159d467d9e136c",
+        "path": "/config.json",
+        "operation": "stat"
+      },
+      {
+        "kind": "value",
+        "key": "d/0000000000000001/5f5f707963616368655f5f",
+        "expected": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "path": "/__pycache__",
+        "operation": "lookup"
+      },
+      {
+        "kind": "value",
+        "key": "d/0000000000000001/636c69656e742e7079",
+        "expected": "2c28735a600ee637e870d57528756959398ad2ae4f1b6ea6fda90ee532ec22a4",
+        "path": "/client.py",
+        "operation": "lookup"
+      },
+      {
+        "kind": "value",
+        "key": "d/0000000000000001/636f6e6669672e6a736f6e",
+        "expected": "9990104c269e4f7ee27677a730323647a888ab1548b00f25a0d6a513d58429ec",
+        "path": "/config.json",
+        "operation": "lookup"
+      },
+      {
+        "kind": "value",
+        "key": "d/0000000000000001/72657472792e6a736f6e",
+        "expected": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "path": "/retry.json",
+        "operation": "lookup"
+      },
+      {
+        "kind": "write",
+        "key": "d/0000000000000001/72657472792e6a736f6e",
+        "expected": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "path": "/retry.json",
+        "operation": "write_preimage"
+      },
+      {
+        "kind": "write",
+        "key": "n/0000000000000004",
+        "expected": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+        "path": "/retry.json",
+        "operation": "write_preimage"
+      }
+    ],
+    "first_receipt": {
+      "format": "witnessfs.receipt.v1",
+      "branch": "migrate",
+      "base_revision": 1,
+      "checked_revision": 1,
+      "accepted_revision": 2,
+      "outcome": "accepted",
+      "observations_checked": 10,
+      "keys_written": 1,
+      "conflicts": []
+    },
+    "stale_receipt": {
+      "format": "witnessfs.receipt.v1",
+      "branch": "retry",
+      "base_revision": 1,
+      "checked_revision": 2,
+      "accepted_revision": null,
+      "outcome": "rejected",
+      "observations_checked": 12,
+      "keys_written": 2,
+      "conflicts": [
+        {
+          "kind": "content",
+          "key": "n/0000000000000003",
+          "expected": "2137bf51f74a0f2e5e3c8594c15eb5119b5f6a33dfeee07909a5da5c897a093d",
+          "path": "/config.json",
+          "operation": "open",
+          "observed": "3d6ee661d261e2709a9de9431c94c7121c5e21c0f7df4eb7cc70eac1debbbdf7"
+        },
+        {
+          "kind": "metadata",
+          "key": "n/0000000000000003",
+          "expected": "7bb4838533aea27ac1e63c7d0f993136f7b65a2129e3eb9256159d467d9e136c",
+          "path": "/config.json",
+          "operation": "stat",
+          "observed": "92b6c422c9398f28daf7f352418015f32a0a47c7057216ab3671db0419beb4f8"
+        }
+      ]
+    },
+    "fresh": [
+      {
+        "label": "retry task",
+        "command": [
+          "python3",
+          "-B",
+          "$REPO/examples/timeout/task_retry.py"
+        ],
+        "exit_code": 0,
+        "stdout": "Read unit=milliseconds; wrote retry timeout=60000.\n",
+        "stderr": ""
+      },
+      {
+        "label": "retry test",
+        "command": [
+          "python3",
+          "-B",
+          "-c",
+          "from client import retry_timeout; actual=retry_timeout(); print(f'retry: {actual:g}s (expected 60s)'); assert actual == 60, f'expected 60 seconds, got {actual:g}'"
+        ],
+        "exit_code": 0,
+        "stdout": "retry: 60s (expected 60s)\n",
+        "stderr": ""
+      }
+    ],
+    "fresh_receipt": {
+      "format": "witnessfs.receipt.v1",
+      "branch": "retry-fresh",
+      "base_revision": 2,
+      "checked_revision": 2,
+      "accepted_revision": 3,
+      "outcome": "accepted",
+      "observations_checked": 12,
+      "keys_written": 2,
+      "conflicts": []
+    },
+    "final_tests": [
+      {
+        "label": "default test",
+        "command": [
+          "python3",
+          "-B",
+          "-c",
+          "from client import default_timeout; actual=default_timeout(); print(f'default: {actual:g}s (expected 30s)'); assert actual == 30"
+        ],
+        "exit_code": 0,
+        "stdout": "default: 30s (expected 30s)\n",
+        "stderr": ""
+      },
+      {
+        "label": "retry test",
+        "command": [
+          "python3",
+          "-B",
+          "-c",
+          "from client import retry_timeout; actual=retry_timeout(); print(f'retry: {actual:g}s (expected 60s)'); assert actual == 60, f'expected 60 seconds, got {actual:g}'"
+        ],
+        "exit_code": 0,
+        "stdout": "retry: 60s (expected 60s)\n",
+        "stderr": ""
+      }
+    ],
+    "stats": {
+      "head": 3,
+      "rows": {
+        "blobs": 5,
+        "branches": 4,
+        "observations": 41,
+        "overlay": 9,
+        "receipts": 4,
+        "versions": 8
+      },
+      "unique_content_bytes": 699
+    },
+    "integrity": "ok"
+  },
+  "cases": [
+    {
+      "id": "independent",
+      "writer": {
+        "format": "witnessfs.receipt.v1",
+        "branch": "writer",
+        "base_revision": 1,
+        "checked_revision": 1,
+        "accepted_revision": 2,
+        "outcome": "accepted",
+        "observations_checked": 4,
+        "keys_written": 1,
+        "conflicts": []
+      },
+      "reader": {
+        "format": "witnessfs.receipt.v1",
+        "branch": "reader",
+        "base_revision": 1,
+        "checked_revision": 2,
+        "accepted_revision": 3,
+        "outcome": "accepted",
+        "observations_checked": 4,
+        "keys_written": 1,
+        "conflicts": []
+      }
+    },
+    {
+      "id": "missing-path",
+      "writer": {
+        "format": "witnessfs.receipt.v1",
+        "branch": "writer",
+        "base_revision": 1,
+        "checked_revision": 1,
+        "accepted_revision": 2,
+        "outcome": "accepted",
+        "observations_checked": 4,
+        "keys_written": 2,
+        "conflicts": []
+      },
+      "reader": {
+        "format": "witnessfs.receipt.v1",
+        "branch": "reader",
+        "base_revision": 1,
+        "checked_revision": 2,
+        "accepted_revision": null,
+        "outcome": "rejected",
+        "observations_checked": 5,
+        "keys_written": 2,
+        "conflicts": [
+          {
+            "kind": "value",
+            "key": "d/0000000000000001/666561747572652e666c6167",
+            "expected": "74234e98afe7498fb5daf1f36ac2d78acc339464f950703b8c019892f982b90b",
+            "path": "/feature.flag",
+            "operation": "lookup",
+            "observed": "8bb42fd9b662d42864f5f74ddc7f8b257379b1c2214a0a5e4fd111a9603f537c"
+          }
+        ]
+      }
+    },
+    {
+      "id": "directory-phantom",
+      "writer": {
+        "format": "witnessfs.receipt.v1",
+        "branch": "writer",
+        "base_revision": 1,
+        "checked_revision": 1,
+        "accepted_revision": 2,
+        "outcome": "accepted",
+        "observations_checked": 6,
+        "keys_written": 2,
+        "conflicts": []
+      },
+      "reader": {
+        "format": "witnessfs.receipt.v1",
+        "branch": "reader",
+        "base_revision": 1,
+        "checked_revision": 2,
+        "accepted_revision": null,
+        "outcome": "rejected",
+        "observations_checked": 7,
+        "keys_written": 2,
+        "conflicts": [
+          {
+            "kind": "directory",
+            "key": "d/0000000000000004/",
+            "expected": "3b430dc4d7d13dd65d1f8a90bb217ecd090100d7198b5b1b7ce5a45dff477762",
+            "path": "/plugins",
+            "operation": "readdir",
+            "observed": "2c5f5892f91cc10278286edce99df04152e6d684522a39dce3eb21924d137fa8"
+          }
+        ]
+      }
+    },
+    {
+      "id": "conservative-rejection",
+      "writer": {
+        "format": "witnessfs.receipt.v1",
+        "branch": "writer",
+        "base_revision": 1,
+        "checked_revision": 1,
+        "accepted_revision": 2,
+        "outcome": "accepted",
+        "observations_checked": 4,
+        "keys_written": 1,
+        "conflicts": []
+      },
+      "reader": {
+        "format": "witnessfs.receipt.v1",
+        "branch": "reader",
+        "base_revision": 1,
+        "checked_revision": 2,
+        "accepted_revision": null,
+        "outcome": "rejected",
+        "observations_checked": 7,
+        "keys_written": 2,
+        "conflicts": [
+          {
+            "kind": "content",
+            "key": "n/0000000000000002",
+            "expected": "9ed387b4562a302181b4fc22746f1cadfbd23340f5d54923c0ad830509f218f3",
+            "path": "/config",
+            "operation": "open",
+            "observed": "2afb1ec09b84d9ff292e4e78ce38542ccbae5d6d3943c68d8de6ce2083de7e92"
+          },
+          {
+            "kind": "metadata",
+            "key": "n/0000000000000002",
+            "expected": "bc81027158584e99cff17ae749917f0598ba5949a516d0b695e0ba14b795ee53",
+            "path": "/config",
+            "operation": "stat",
+            "observed": "4597f9025e68fdca73fac6af40bf5308e69a4fe9cd63862aef3c6e7ce7cfc4ab"
+          }
+        ]
+      }
+    }
+  ]
+}

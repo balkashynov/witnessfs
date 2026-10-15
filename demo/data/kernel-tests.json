@@ -1,0 +1,92 @@
+{
+  "format": "witnessfs.kernel-tests.v1",
+  "platform": "Linux-6.10.14-linuxkit-aarch64-with-glibc2.36",
+  "tests": [
+    {
+      "test": "__main__.KernelTests.test_cached_mmap_read_is_observed",
+      "outcome": "passed",
+      "seconds": 0.0688516250002067
+    },
+    {
+      "test": "__main__.KernelTests.test_clean_writes_allow_both_branches",
+      "outcome": "passed",
+      "seconds": 0.06044783399966036
+    },
+    {
+      "test": "__main__.KernelTests.test_compiled_executable_runs_from_mount",
+      "outcome": "passed",
+      "seconds": 0.10225641700026245
+    },
+    {
+      "test": "__main__.KernelTests.test_directory_phantom",
+      "outcome": "passed",
+      "seconds": 0.05485270799999853
+    },
+    {
+      "test": "__main__.KernelTests.test_explicit_timestamps_and_permissions",
+      "outcome": "passed",
+      "seconds": 0.030838040999697114
+    },
+    {
+      "test": "__main__.KernelTests.test_generated_operations_match_native_filesystem",
+      "outcome": "passed",
+      "seconds": 0.7342947919996732
+    },
+    {
+      "test": "__main__.KernelTests.test_killed_acceptance_is_all_or_nothing",
+      "outcome": "passed",
+      "seconds": 0.14910141599966664
+    },
+    {
+      "test": "__main__.KernelTests.test_missing_file_dependency",
+      "outcome": "passed",
+      "seconds": 0.05773937499998283
+    },
+    {
+      "test": "__main__.KernelTests.test_mmap_write_flush_persists",
+      "outcome": "passed",
+      "seconds": 0.03243841599987718
+    },
+    {
+      "test": "__main__.KernelTests.test_non_utf8_names_and_symlink",
+      "outcome": "passed",
+      "seconds": 0.03236658300011186
+    },
+    {
+      "test": "__main__.KernelTests.test_open_unlink_and_hardlink",
+      "outcome": "passed",
+      "seconds": 0.03212600000006205
+    },
+    {
+      "test": "__main__.KernelTests.test_out_of_band_mutation_and_seal_are_blocked",
+      "outcome": "passed",
+      "seconds": 0.02946883300000991
+    },
+    {
+      "test": "__main__.KernelTests.test_python_and_bash_roundtrip",
+      "outcome": "passed",
+      "seconds": 0.0361880000000383
+    },
+    {
+      "test": "__main__.KernelTests.test_rename_noreplace_checks_even_same_inode",
+      "outcome": "passed",
+      "seconds": 0.03390441700003066
+    },
+    {
+      "test": "__main__.KernelTests.test_rename_replace_and_directory_move",
+      "outcome": "passed",
+      "seconds": 0.03491579100000308
+    },
+    {
+      "test": "__main__.KernelTests.test_sparse_truncate",
+      "outcome": "passed",
+      "seconds": 0.03130220899993219
+    },
+    {
+      "test": "__main__.KernelTests.test_stale_read_rejects_disjoint_output",
+      "outcome": "passed",
+      "seconds": 0.05246004200034804
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,424 @@
+{
+  "schema": 1,
+  "recorded_at": "2026-10-15T18:13:10.070132+00:00",
+  "platform": "Linux-6.10.14-linuxkit-aarch64-with-glibc2.36",
+  "logical_cpus": 12,
+  "environment": "Docker Desktop Linux aarch64 VM on Apple M3 Pro, 18 GB host RAM; VM approximately 8 GB. Single local run, warm host caches.",
+  "notes": [
+    "CLI samples include process startup, SQLite open and checkpoint on close.",
+    "Git worktree creation materializes files; WitnessFS snapshot creation does not mount them. Mount startup is measured separately.",
+    "Import is a one-time extra cost; WitnessFS is not an in-place overlay on the source tree.",
+    "Each write sample replaces 64 KiB then fsyncs. Native filesystem is the container writable layer; not a matched storage engine.",
+    "Reads include open/read/close and observe the whole file. Warm kernel caches allowed on both paths.",
+    "Not a throughput, production concurrency, SSD durability or large-repository capacity claim."
+  ],
+  "scales": [
+    {
+      "files": 100,
+      "source_bytes": 204800,
+      "fixture_and_first_import_ms": 40.804584,
+      "import": {
+        "unit": "ms",
+        "samples": [
+          21.083833
+        ],
+        "median": 21.083833,
+        "min": 21.083833,
+        "max": 21.083833
+      },
+      "git_add_and_commit": {
+        "unit": "ms",
+        "samples": [
+          12.615125
+        ],
+        "median": 12.615125,
+        "min": 12.615125,
+        "max": 12.615125
+      },
+      "snapshot": {
+        "unit": "ms",
+        "samples": [
+          2.372584,
+          2.101208,
+          1.8915,
+          2.27725,
+          1.973333,
+          6.657959,
+          3.459625,
+          4.956334,
+          2.153542,
+          1.953209,
+          1.744416,
+          6.397667,
+          1.966917,
+          2.48875,
+          2.387667,
+          2.239625,
+          2.593125,
+          2.293458,
+          2.235375,
+          2.075875,
+          2.097209,
+          2.565125,
+          2.185625,
+          2.467917,
+          2.582583
+        ],
+        "median": 2.27725,
+        "min": 1.744416,
+        "max": 6.657959
+      },
+      "git_worktree": {
+        "unit": "ms",
+        "samples": [
+          4.589292,
+          4.699708,
+          4.42225,
+          4.7915,
+          6.752625,
+          5.238208,
+          4.700917,
+          6.559
+        ],
+        "median": 4.7462085,
+        "min": 4.42225,
+        "max": 6.752625
+      },
+      "mount_unmount": {
+        "unit": "ms",
+        "samples": [
+          18.622792,
+          15.910041,
+          14.911042,
+          15.120375,
+          18.058625,
+          14.895542,
+          15.158917,
+          13.716792
+        ],
+        "median": 15.139645999999999,
+        "min": 13.716792,
+        "max": 18.622792
+      },
+      "accept": {
+        "samples": [
+          2.584542,
+          2.271042,
+          2.548709,
+          2.320083,
+          2.964125,
+          2.820042,
+          2.899916,
+          3.032667,
+          3.16325,
+          2.340542
+        ],
+        "median": 2.702292,
+        "unit": "ms"
+      },
+      "storage_before_snapshots": {
+        "head": 1,
+        "rows": {
+          "blobs": 100,
+          "branches": 1,
+          "observations": 304,
+          "overlay": 202,
+          "receipts": 1,
+          "versions": 203
+        },
+        "unique_content_bytes": 204800
+      },
+      "storage_after_snapshots": {
+        "head": 1,
+        "rows": {
+          "blobs": 100,
+          "branches": 26,
+          "observations": 304,
+          "overlay": 202,
+          "receipts": 1,
+          "versions": 203
+        },
+        "unique_content_bytes": 204800
+      },
+      "disk_bytes_before": 663552,
+      "disk_bytes_after": 663552
+    },
+    {
+      "files": 10000,
+      "source_bytes": 20480000,
+      "fixture_and_first_import_ms": 1491.212375,
+      "import": {
+        "unit": "ms",
+        "samples": [
+          1115.3015
+        ],
+        "median": 1115.3015,
+        "min": 1115.3015,
+        "max": 1115.3015
+      },
+      "git_add_and_commit": {
+        "unit": "ms",
+        "samples": [
+          563.29175
+        ],
+        "median": 563.29175,
+        "min": 563.29175,
+        "max": 563.29175
+      },
+      "snapshot": {
+        "unit": "ms",
+        "samples": [
+          7.344,
+          8.803875,
+          10.1225,
+          9.097125,
+          10.5625,
+          11.339333,
+          9.219292,
+          9.871708,
+          11.6645,
+          4.00075,
+          2.247041,
+          2.333083,
+          2.501708,
+          2.968625,
+          2.307292,
+          2.373584,
+          2.249792,
+          2.5305,
+          2.429917,
+          2.536459,
+          2.983625,
+          2.373042,
+          2.823958,
+          2.304875,
+          3.130917
+        ],
+        "median": 2.968625,
+        "min": 2.247041,
+        "max": 11.6645
+      },
+      "git_worktree": {
+        "unit": "ms",
+        "samples": [
+          305.204959,
+          218.954458,
+          134.029875,
+          144.877917,
+          151.809917,
+          138.593166,
+          144.249667,
+          131.031375
+        ],
+        "median": 144.56379199999998,
+        "min": 131.031375,
+        "max": 305.204959
+      },
+      "mount_unmount": {
+        "unit": "ms",
+        "samples": [
+          46.428583,
+          21.459708,
+          20.59825,
+          20.206916,
+          19.828125,
+          23.032125,
+          21.97675,
+          21.948167
+        ],
+        "median": 21.703937500000002,
+        "min": 19.828125,
+        "max": 46.428583
+      },
+      "accept": {
+        "samples": [
+          14.430666,
+          9.459666,
+          9.44675,
+          9.171416,
+          7.2785,
+          9.514708,
+          7.553959,
+          3.508333,
+          3.863083,
+          3.73075
+        ],
+        "median": 8.3626875,
+        "unit": "ms"
+      },
+      "storage_before_snapshots": {
+        "head": 1,
+        "rows": {
+          "blobs": 10000,
+          "branches": 1,
+          "observations": 30004,
+          "overlay": 20002,
+          "receipts": 1,
+          "versions": 20003
+        },
+        "unique_content_bytes": 20480000
+      },
+      "storage_after_snapshots": {
+        "head": 1,
+        "rows": {
+          "blobs": 10000,
+          "branches": 26,
+          "observations": 30004,
+          "overlay": 20002,
+          "receipts": 1,
+          "versions": 20003
+        },
+        "unique_content_bytes": 20480000
+      },
+      "disk_bytes_before": 59092992,
+      "disk_bytes_after": 59092992
+    }
+  ],
+  "io": {
+    "read_bytes": 4194304,
+    "write_bytes": 65536,
+    "native_read": {
+      "unit": "ms",
+      "samples": [
+        0.69575,
+        0.387375,
+        0.297417,
+        0.262125,
+        0.273875,
+        0.2785,
+        0.253667,
+        0.243625,
+        0.252583,
+        0.254541,
+        0.256334,
+        0.256458,
+        0.253208,
+        0.242542,
+        0.236834,
+        0.23525,
+        0.237208,
+        0.239125,
+        0.234167,
+        0.243542,
+        0.267666,
+        0.324375,
+        0.292083,
+        0.266375,
+        0.280958
+      ],
+      "median": 0.256334,
+      "min": 0.234167,
+      "max": 0.69575
+    },
+    "witness_read": {
+      "unit": "ms",
+      "samples": [
+        12.103666,
+        11.550792,
+        12.014209,
+        12.005709,
+        11.928791,
+        11.958958,
+        12.002833,
+        11.66025,
+        11.850791,
+        11.90875,
+        11.93,
+        12.703542,
+        12.204166,
+        12.199834,
+        12.286084,
+        12.118334,
+        12.058167,
+        12.539792,
+        13.65425,
+        13.052167,
+        12.832667,
+        13.016834,
+        12.352208,
+        13.137459,
+        12.046333
+      ],
+      "median": 12.103666,
+      "min": 11.550792,
+      "max": 13.65425
+    },
+    "native_write_fsync": {
+      "unit": "ms",
+      "samples": [
+        0.806125,
+        0.491459,
+        0.431125,
+        0.719375,
+        0.525708,
+        0.565,
+        0.345208,
+        0.369209,
+        0.377959,
+        0.347459,
+        0.347917,
+        0.375,
+        0.413042,
+        0.366875,
+        0.354541,
+        0.336666,
+        0.501542,
+        0.40875,
+        0.383916,
+        0.381708,
+        0.347417,
+        0.369083,
+        0.365667,
+        0.383209,
+        0.464709
+      ],
+      "median": 0.381708,
+      "min": 0.336666,
+      "max": 0.806125
+    },
+    "witness_write_fsync": {
+      "unit": "ms",
+      "samples": [
+        2.11075,
+        1.110833,
+        1.143125,
+        1.619333,
+        1.263417,
+        1.103875,
+        1.150042,
+        1.067375,
+        1.077583,
+        1.119042,
+        1.02975,
+        1.061833,
+        1.041625,
+        1.059875,
+        1.098834,
+        1.113167,
+        1.254791,
+        1.211458,
+        1.206166,
+        1.22175,
+        1.196125,
+        1.177792,
+        1.306833,
+        1.092208,
+        1.42375
+      ],
+      "median": 1.143125,
+      "min": 1.02975,
+      "max": 2.11075
+    },
+    "receipt": {
+      "format": "witnessfs.receipt.v1",
+      "branch": "io",
+      "base_revision": 1,
+      "checked_revision": 1,
+      "accepted_revision": 2,
+      "outcome": "accepted",
+      "observations_checked": 7,
+      "keys_written": 2,
+      "conflicts": []
+    }
+  }
+}

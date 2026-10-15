@@ -1,0 +1,32 @@
+name: Check
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  core:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Rust
+        run: rustup toolchain install 1.93.0 --profile minimal --component rustfmt --component clippy
+      - name: Format, lint and test
+        run: |
+          cargo +1.93.0 fmt --all --check
+          cargo +1.93.0 clippy --locked --all-targets -- -D warnings
+          cargo +1.93.0 test --locked --all-targets
+  kernel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Enable FUSE
+        run: sudo modprobe fuse
+      - name: Actual kernel, crash and demo checks
+        run: bash scripts/verify.sh
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: linux-evidence
+          path: .runs/*.json

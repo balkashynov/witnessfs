@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="WitnessFS: a Rust filesystem that remembers what parallel agents read, then checks those assumptions before accepting their work."
+    />
+    <meta name="theme-color" content="#f4f1e9" />
+    <title>WitnessFS · Remember what the work depended on</title>
+    <link rel="icon" href="mark.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="style.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="masthead wrap">
+      <a class="wordmark" href="#"
+        ><img src="mark.svg" alt="" width="32" height="32" /> WitnessFS<span>
+          / 0.1</span
+        ></a
+      >
+      <nav aria-label="Main">
+        <a href="#replay">The failure</a><a href="#engineering">The system</a
+        ><a href="#measurements">The cost</a
+        ><a href="../README.md">Source guide ↗</a>
+      </nav>
+    </header>
+    <main>
+      <section class="hero wrap">
+        <div class="eyebrow">
+          <span class="dot"></span> A filesystem experiment for parallel coding
+          agents
+        </div>
+        <h1>A clean merge<br />can still be <em>wrong.</em></h1>
+        <div class="hero-bottom">
+          <p>
+            Two agents. Two passing tests. Different files.<br />One assumption
+            that stopped being true.
+          </p>
+          <p class="intro">
+            WitnessFS remembers what a workspace read, including what
+            <em>wasn't there</em>. Before accepting its writes, it checks that
+            those facts still hold.
+          </p>
+        </div>
+        <a class="primary" href="#replay">Watch the failure <span>↓</span></a>
+        <div class="stack">
+          RUST <span>·</span> LINUX FUSE <span>·</span> OPTIMISTIC TRANSACTIONS
+        </div>
+      </section>
+
+      <section id="replay" class="replay-section">
+        <div class="wrap">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">01 / A reproducible counterexample</span>
+              <h2>Git sees the edits.<br />WitnessFS sees the dependency.</h2>
+            </div>
+            <p class="evidence-label">
+              <span class="dot"></span> Recorded execution<br /><span
+                >Real Git + Linux FUSE. Scripted tasks, not an LLM
+                session.</span
+              >
+            </p>
+          </div>
+          <div class="steps" role="group" aria-label="Replay steps">
+            <button data-step="0" aria-pressed="true"><b>01</b> Fork</button
+            ><button data-step="1" aria-pressed="false"><b>02</b> Work</button
+            ><button data-step="2" aria-pressed="false"><b>03</b> Merge</button
+            ><button data-step="3" aria-pressed="false">
+              <b>04</b> Validate</button
+            ><button data-step="4" aria-pressed="false"><b>05</b> Rerun</button>
+          </div>
+          <div class="replay-grid">
+            <div class="workspace-map">
+              <div class="base">
+                <span class="mono">BASE / REVISION 1</span
+                ><code>timeout_unit: "seconds"</code>
+              </div>
+              <div class="fork-lines" aria-hidden="true">
+                <span></span><span></span>
+              </div>
+              <div class="agents">
+                <article class="agent">
+                  <div class="agent-head">
+                    <span class="agent-id">A</span>
+                    <div>
+                      <h3>Migrate units</h3>
+                      <span class="mono">CONFIG WORKSPACE</span>
+                    </div>
+                  </div>
+                  <div class="file">
+                    <span>config.json</span
+                    ><code id="config-value">seconds → milliseconds</code>
+                  </div>
+                  <p id="config-test" class="task-state">Isolated snapshot</p>
+                </article>
+                <article class="agent">
+                  <div class="agent-head">
+                    <span class="agent-id blue">B</span>
+                    <div>
+                      <h3>Add a retry</h3>
+                      <span class="mono">RETRY WORKSPACE</span>
+                    </div>
+                  </div>
+                  <div class="file">
+                    <span>retry.json</span
+                    ><code id="retry-value">timeout: 60</code>
+                  </div>
+                  <p id="retry-test" class="task-state">Isolated snapshot</p>
+                </article>
+              </div>
+              <div id="dependency" class="dependency">
+                <span class="read-arrow">↖</span>
+                <div>
+                  <b>The invisible dependency</b
+                  ><span
+                    >B reads config.json to choose the unit for its new
+                    timeout.</span
+                  >
+                </div>
+              </div>
+            </div>
+            <aside class="narrative" aria-live="polite">
+              <span id="stage-label" class="eyebrow">STEP 01 / FORK</span>
+              <h3 id="stage-title">
+                Same starting point.<br />Separate workspaces.
+              </h3>
+              <p id="stage-description">
+                Both tasks start with a configuration measured in seconds. Each
+                has a private copy of the same revision.
+              </p>
+              <div id="outcome" class="outcome">
+                <b>30 seconds</b><span>The original default timeout.</span>
+              </div>
+              <div class="replay-controls">
+                <button id="previous" class="quiet" disabled>← Back</button
+                ><button id="next" class="primary">Next step →</button>
+              </div>
+            </aside>
+          </div>
+          <div class="execution-grid">
+            <article class="terminal">
+              <div class="terminal-head">
+                <span>GIT / RECORDED EVIDENCE</span
+                ><span id="git-status">BASE</span>
+              </div>
+              <pre id="git-output" tabindex="0">Loading recorded evidence…</pre>
+            </article>
+            <article class="terminal witness">
+              <div class="terminal-head">
+                <span>WITNESSFS / RECORDED EVIDENCE</span
+                ><span id="witness-status">BASE</span>
+              </div>
+              <pre id="witness-output" tabindex="0">
+Loading recorded evidence…</pre
+              >
+            </article>
+          </div>
+          <details class="receipt">
+            <summary>
+              Inspect the complete rejection receipt
+              <span>12 observations · exact dependency hashes</span>
+            </summary>
+            <pre id="receipt-json" tabindex="0"></pre>
+          </details>
+        </div>
+      </section>
+
+      <section id="engineering" class="wrap engineering">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">02 / The mechanism</span>
+            <h2>Observe. Freeze. Validate.<br />Then publish, atomically.</h2>
+          </div>
+          <p>
+            No model judges the merge. Ordinary programs run through a FUSE
+            mount; deterministic checks decide whether their recorded inputs are
+            still current.
+          </p>
+        </div>
+        <div class="pipeline">
+          <div>
+            <b>01</b>
+            <h3>Observe</h3>
+            <p>
+              File contents, metadata, missing paths and directory membership.
+            </p>
+          </div>
+          <div>
+            <b>02</b>
+            <h3>Freeze</h3>
+            <p>Unmount and seal. A process lease excludes a live writer.</p>
+          </div>
+          <div>
+            <b>03</b>
+            <h3>Validate</h3>
+            <p>
+              Compare read dependencies and write preimages with the latest
+              revision.
+            </p>
+          </div>
+          <div>
+            <b>04</b>
+            <h3>Publish</h3>
+            <p>
+              One SQLite transaction publishes all writes and the acceptance
+              receipt.
+            </p>
+          </div>
+        </div>
+        <div class="case-heading">
+          <h3>Absence is a dependency, too.</h3>
+          <p>Select another recorded history.</p>
+        </div>
+        <div class="case-buttons" role="group" aria-label="Recorded cases">
+          <button data-case="missing-path" aria-pressed="true">
+            Missing file</button
+          ><button data-case="directory-phantom" aria-pressed="false">
+            Directory membership</button
+          ><button data-case="independent" aria-pressed="false">
+            Independent writes</button
+          ><button data-case="conservative-rejection" aria-pressed="false">
+            Harmless edit
+          </button>
+        </div>
+        <div class="case-result">
+          <div>
+            <span id="case-verdict" class="eyebrow">REJECTED</span>
+            <h3 id="case-title">A file that wasn't there.</h3>
+            <p id="case-description"></p>
+          </div>
+          <pre id="case-output" tabindex="0"></pre>
+        </div>
+        <div class="verification">
+          <div>
+            <strong>640</strong
+            ><span
+              >generated transactions checked against an independent serial
+              interpreter</span
+            >
+          </div>
+          <div>
+            <strong>1,200</strong
+            ><span
+              >file operations compared with Linux's native filesystem</span
+            >
+          </div>
+          <div>
+            <strong>4</strong
+            ><span
+              >acceptance crash cuts, before and after the database commit</span
+            >
+          </div>
+          <div>
+            <strong id="kernel-count">17</strong
+            ><span
+              >real-kernel tests, including mmap, hard links and executable
+              files</span
+            >
+          </div>
+        </div>
+        <p class="fine-print">
+          Bounded tests, not a formal proof. Snapshot creation copies no file
+          content; versioned inodes, namespace entries and content-addressed
+          chunks live in SQLite.
+          <a href="../docs/CORRECTNESS.md">Read the correctness argument ↗</a>
+        </p>
+      </section>
+
+      <section id="measurements" class="measurements">
+        <div class="wrap">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">03 / Measured, including the downside</span>
+              <h2>Cheap branches.<br />More expensive I/O.</h2>
+            </div>
+            <p>
+              One local Docker Linux run on an Apple M3 Pro. Raw samples are
+              included. These are implementation costs, not production capacity
+              claims.
+            </p>
+          </div>
+          <div class="benchmark-grid">
+            <article>
+              <h3>A 10,000-file workspace</h3>
+              <p class="chart-context">
+                Median milliseconds · CLI wall time · lower is better
+              </p>
+              <div id="snapshot-chart"></div>
+              <p id="snapshot-note" class="fine-print"></p>
+            </article>
+            <article>
+              <h3>Reading 4 MiB, warm caches</h3>
+              <p class="chart-context">
+                Median milliseconds · open, read, compare, close
+              </p>
+              <div id="read-chart"></div>
+              <p id="read-note" class="fine-print"></p>
+            </article>
+          </div>
+          <div class="benchmark-table-wrap">
+            <table>
+              <caption>
+                Costs the headline leaves out
+              </caption>
+              <thead>
+                <tr>
+                  <th scope="col">Operation</th>
+                  <th scope="col">100 files</th>
+                  <th scope="col">10,000 files</th>
+                </tr>
+              </thead>
+              <tbody id="benchmark-table"></tbody>
+            </table>
+          </div>
+          <p class="fine-print">
+            Git materializes a working tree; WitnessFS snapshots only save a
+            revision. Mount/unmount is shown separately. Native I/O uses the
+            container's writable filesystem. The storage engines are not
+            matched.
+            <a href="data/benchmark.json">Every sample and caveat ↗</a>
+          </p>
+        </div>
+      </section>
+
+      <section class="wrap boundaries">
+        <div>
+          <span class="eyebrow">04 / What this does and doesn't establish</span>
+          <h2>Remembering reads<br />isn't understanding intent.</h2>
+        </div>
+        <div>
+          <p>
+            The useful guarantee is narrow: recorded base-state dependencies
+            still match at acceptance. Previous conversations, network
+            responses, host files and unobserved assumptions remain outside it.
+          </p>
+          <p>
+            Whole-file reads can reject harmless changes. Broad searches can
+            create large read sets. This is an experimental workspace component,
+            with real overhead and no production adoption yet.
+          </p>
+          <p>
+            Optimistic transactions and transactional filesystems have decades
+            of prior art.
+            <a href="../docs/DESIGN.md">Zit, BranchFS, AgentFS and others</a>
+            inform the comparison. WitnessFS explores transparent filesystem
+            observations and a testable acceptance boundary.
+          </p>
+        </div>
+      </section>
+      <section class="wrap get-started">
+        <div>
+          <span class="eyebrow">RUN IT YOURSELF</span>
+          <h2>The evidence is reproducible.</h2>
+          <p>
+            Rust source, Linux FUSE tests, crash harness, command transcripts
+            and raw timing samples.
+          </p>
+        </div>
+        <a class="primary" href="../README.md#run-the-demonstration"
+          >Open the runbook ↗</a
+        >
+      </section>
+    </main>
+    <footer class="wrap">
+      <a class="wordmark" href="#">WitnessFS</a
+      ><span
+        >Built by Ivan Balkashynov · Independent experiment · MIT license</span
+      ><a href="data/demo.json">Raw execution record ↗</a>
+    </footer>
+    <p id="load-error" role="alert" hidden></p>
+  </body>
+</html>

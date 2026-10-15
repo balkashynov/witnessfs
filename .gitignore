@@ -1,0 +1,6 @@
+/target/
+/.runs/
+/.venv/
+/local-notes/
+__pycache__/
+.DS_Store

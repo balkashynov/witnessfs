@@ -1,0 +1,131 @@
+# Validation record
+
+Recorded 2026-10-15. The implementation is an experimental local filesystem.
+No production deployment, Anthropic integration, hosted CI run or external
+adopter result is claimed. See `evidence/source-manifest.json` for the source and
+binary hashes associated with these records.
+
+## Environment
+
+- Host: Apple M3 Pro, 12 logical CPUs, 18 GB RAM, macOS arm64.
+- Native core checks: Rust/Cargo 1.93.0, formatting, clippy with warnings denied,
+  and all Rust test targets.
+- Mounted checks: Docker Desktop, Linux 6.10.14-linuxkit aarch64, Debian bookworm,
+  approximately 8 GB VM RAM. Build image's Rust 1.93 tag resolved to 1.93.1.
+- Test containers: network disabled, `/dev/fuse` and `SYS_ADMIN` for the mount.
+  No privileged container or live company repository was used.
+- Linux-specific formatting, clippy with warnings denied, compilation and Rust
+  tests passed in the final Docker build. The added lint stage reused the same
+  release binary as the recorded kernel/demo/benchmark run.
+
+## Correctness evidence
+
+| Check | Result | Scope |
+| --- | --- | --- |
+| Core transaction tests | 8 passed | Write skew, independent writes, namespace dependencies, error rollback, sparse files, object identity, branch leases and concurrent acceptance |
+| Independent serial interpreter | 80 histories / 640 transactions | 406 accepted, 234 rejected; accepted outputs and observations agree with serial application |
+| Blind-composition negative control | 240 changed observations | Shows that the generated inputs actually exercise stale decisions; this is a count of changed observations, not a count of failing applications |
+| Linux kernel suite | 17 passed | Real mount operations, not mocked FUSE callbacks |
+| Native filesystem differential | 1,200 seeded operations | Compare errors, content, file mode and file hard-link counts at checkpoints; directory timestamp semantics are deliberately different |
+| Acceptance crash cuts | 4 passed | SIGKILL after versions/head/receipt/commit; all-or-nothing state, integrity and idempotent decision recovery |
+| Demo | Passed all assertions | Clean Git merge breaks the combined retry test; WitnessFS rejects stale work; fresh retry and exported tests pass |
+| Conservative rejection | Reproduced | Changing only a comment rejects a reader that uses only the setting |
+
+The kernel suite also covers missing-file reads, directory phantoms, cached mmap
+reads, flushed shared mmap writes, non-UTF-8 names, symlinks, compiled GCC
+executables, open-unlink behavior, hard links, rename/replace/RENAME_NOREPLACE,
+explicit timestamps and out-of-band access while a branch is mounted.
+
+The serial oracle has its own plain-map interpreter. It compares against current
+serial state after each accepted transaction; it does not ask WitnessFS's
+validator whether a result should be right. It is bounded randomized testing,
+not exhaustive state-space exploration or a formal proof.
+
+Raw evidence:
+
+- [Kernel test cases and outcomes](evidence/kernel-tests.json)
+- [Actual command output, observations and receipts](evidence/demo.json)
+- [Timing samples and storage counts](evidence/benchmark.json)
+- [Native Rust output](evidence/rust-macos.txt)
+- [Interactive replay screenshot](evidence/demo-desktop.jpg)
+
+## Measurements
+
+One local run. Values below are medians except single-sample initialization.
+All samples, minimum/maximum values and environmental caveats are retained in
+the raw JSON. Host load and warm caches are not controlled across machines or
+runs. Earlier development runs varied; these numbers are not guarantees.
+
+| Operation | Samples | 100 files | 10,000 files |
+| --- | ---: | ---: | ---: |
+| WitnessFS snapshot CLI | 25 | 2.28 ms | 2.97 ms |
+| Git detached worktree | 8 | 4.75 ms | 144.56 ms |
+| WitnessFS mount + unmount | 8 | 15.14 ms | 21.70 ms |
+| WitnessFS import | 1 | 21.08 ms | 1,115.30 ms |
+| Git add + first commit | 1 | 12.61 ms | 563.29 ms |
+| Accept one newly written output file | 10 | 2.70 ms | 8.36 ms |
+
+Snapshot creation stores a revision; Git worktree creation materializes files.
+They are **not equivalent completed checkouts**. The comparison exposes that
+tradeoff, with mount and import costs alongside it. All CLI measurements include
+process startup and SQLite open/close. Acceptance samples each use a new branch
+and include no retries or concurrent acceptance load.
+
+| I/O operation | Native filesystem | WitnessFS mount | Samples |
+| --- | ---: | ---: | ---: |
+| Read/compare 4 MiB, warm caches | 0.256 ms | 12.104 ms | 25 each |
+| Replace 64 KiB and fsync | 0.382 ms | 1.143 ms | 25 each |
+
+Warm reads were **47.2x slower** through the mount in this run. Each sample opens,
+reads, checks equality and closes; both paths are warmed first. A readable open
+records whole-file content even when kernel caching reduces read callbacks.
+Writes use the same 64 KiB random payload and fsync on both paths. The native
+baseline is the container writable filesystem, while WitnessFS is a SQLite
+filesystem on top of it. This is useful end-to-end cost evidence, not an isolated
+FUSE or SQLite microbenchmark and not a matched storage-engine comparison.
+
+Ten thousand unique 2 KiB files contain 20,480,000 bytes of source content.
+The initialized WitnessFS directory occupied 59,092,992 logical file bytes,
+including indexes, serialized metadata and retained import observations/overlay.
+Twenty-five additional snapshots added no content blobs or version rows.
+The database reused existing free pages, so its measured length was unchanged;
+this does not imply snapshots need zero storage forever. There is no GC.
+
+The implementation should next be evaluated on representative agent read sets:
+conflicts per useful change, rerun cost, whole-project searches and dependency
+caches. The small generated histories do not measure those user-facing outcomes.
+
+## Reproduction
+
+```sh
+cargo fmt --all --check
+cargo clippy --locked --all-targets -- -D warnings
+cargo test --locked --all-targets -- --nocapture
+bash scripts/verify.sh --benchmark
+```
+
+The Docker build runs the Rust checks. `verify.sh` runs the real kernel suite and
+records the demo; `--benchmark` adds measurements. Outputs go into ignored
+`.runs/` and do not overwrite the committed evidence. Timing and timestamps will
+change. Repeated demo runs should preserve outcomes, conflict kinds and paths;
+metadata hashes can differ because real filesystem timestamps are used.
+
+The included GitHub Actions workflow has not been run on GitHub. Local execution
+establishes the results above, not availability on every hosted runner.
+
+## Browser verification
+
+The local evidence page was exercised in the Codex browser at its desktop
+viewport and a 390-pixel mobile viewport. All five history steps, four secondary
+cases, the final exported test output and benchmark records were inspected.
+No browser warning/error logs were present. The mobile page had no horizontal
+overflow in the inspected DOM. The viewport override was reset afterward.
+
+## Remaining limits
+
+No real Claude session, production incident, full POSIX certification, power-loss
+test, distributed failure test, sustained multi-process load test or demonstrated
+hiring outcome. External effects remain untracked. Whole-file dependencies can
+reject valid work. The current global SQLite writer and retained history are
+scalability constraints. The [contract](CORRECTNESS.md) states intentional
+filesystem differences and unsupported operations.
