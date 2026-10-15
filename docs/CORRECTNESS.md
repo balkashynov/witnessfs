@@ -54,7 +54,11 @@ The hypothesis depends on capturing relevant operations. FUSE lookup/getattr
 responses use zero TTL. Every readable open observes content before the kernel
 can satisfy reads from cache or mmap. Directory open captures a stable listing
 and records membership. Only one mount may own a branch, and CLI operations use
-the same branch lease. The kernel writeback-cache capability is not enabled.
+the same branch lease. Opens return `FOPEN_KEEP_CACHE`: with this mount as the
+only permitted writer, the kernel can retain its coherent data cache across
+opens. Observation happens on every readable open even if no read callback
+follows. Tests cover writes through aliases, shared mmap updates, truncation,
+extension and remounting. The kernel writeback-cache capability is not enabled.
 An ordinary unmount must complete before sealing; tests exercise mmap flush.
 
 ## Atomicity and recovery

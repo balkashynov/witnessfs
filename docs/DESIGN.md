@@ -36,8 +36,9 @@ Conflicts preserve the branch's work and produce a machine-readable receipt.
 
 The FUSE layer disables entry/attribute caching and observes all file content on
 every readable open, covering kernel-cached and memory-mapped reads. Each branch
-has its own mount and exclusive process lease. The kernel writeback-cache
-capability is not enabled.
+has its own mount and exclusive process lease. The data cache is retained across
+opens with `FOPEN_KEEP_CACHE`; the exclusive mount is its only permitted writer.
+The kernel writeback-cache capability is not enabled.
 Lookup failures, directory enumeration, metadata, symlink targets and file bytes
 have separate observation kinds. Namespace writes record preimages even when the
 program never reads them. Observations satisfied by the branch's own writes are

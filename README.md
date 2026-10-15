@@ -124,7 +124,8 @@ with zero padding omitted. A process lease excludes a mounted branch from
 out-of-band mutation or acceptance.
 
 Readable opens record the entire file dependency, covering cached and mmap
-reads that may bypass a FUSE read callback. Entry and attribute TTLs are zero.
+reads that may bypass a FUSE read callback. The exclusive mount retains the
+kernel's data cache across opens. Entry and attribute TTLs are zero.
 Failed operations retain their observations while rolling back their effects.
 The ordinary release binary contains no active crash-injection hooks.
 
@@ -132,7 +133,7 @@ The ordinary release binary contains no active crash-injection hooks.
 
 - Eight core transaction tests and an independent serial interpreter over 640
   generated transactions, including write skew, absent paths and enumeration.
-- Seventeen actual Linux FUSE tests: 1,200 generated file operations compared
+- Eighteen actual Linux FUSE tests: 1,200 generated file operations compared
   with native Linux behavior, compiled executable files, cached/mmap reads,
   flushed shared mmap writes, sparse files, hard links, rename and mount leases.
 - Four forced process kills around acceptance. Recovery exposes either both

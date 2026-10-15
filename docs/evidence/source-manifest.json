@@ -1,9 +1,9 @@
 {
-  "recorded_at": "2026-10-15T18:20:38.929272+00:00",
+  "recorded_at": "2026-10-15T18:24:54.814180+00:00",
   "format": "witnessfs.evidence.v1",
-  "note": "Source captured after verification. The final Dockerfile adds Rust lint checks; its release binary is unchanged from the recorded kernel/demo/benchmark run. UI checks were performed separately. No hosted CI is claimed.",
-  "linux_binary_sha256": "103b32ac39108525f97ec8c7d1d98c725ad35abd4b169d69a81474553afda6d5",
-  "linux_fault_binary_sha256": "24c810a49b37c63208725e6d7d2c8217abe254aa8b9dcf570cef3d26300360db",
+  "note": "Final Linux build includes formatting, clippy and Rust tests, followed by the recorded kernel/demo/benchmark run. The macOS core files are unchanged from their native test run. UI was checked separately. Baseline before cache retention is commit 3db2521. No hosted CI is claimed.",
+  "linux_binary_sha256": "0cc75409a095847d99d15ae15d0d82be974d4366775ae5afb1feb524e51826b1",
+  "linux_fault_binary_sha256": "c90680682e1e35a99788e5711e8a790c877a907c5496cb9b0d2f76655b492fc4",
   "source": {
     ".dockerignore": "8a0f300fad1c8c7cffd0ae0f7a7a39f74ed9f79930e5a94cef741b3bd53ffd2f",
     ".github/workflows/check.yml": "ae09038fc586642fef6b9e9e5afffa9a5721b5853e296d753fd1d47c2ad7cb7e",
@@ -11,7 +11,7 @@
     "Cargo.toml": "1849f529b8fb6ccbe280a146093b01189e2e36761504c5f66e19f37398d15076",
     "Dockerfile": "33090c473763d4ed936f409d8dbb7115718dbc0d67461707639fa81b41688c9f",
     "demo/app.js": "48119369c6a1f87d30fa86b1809adde31204c81482261cbfb7749fff570210a8",
-    "demo/index.html": "9d1b0b5544efd32d4c0b81fc0568b3801ff8fe5de8a22c36842a5765b560fb9e",
+    "demo/index.html": "f8dc54de706d40309e7f4473951a2a8d72fdef3688740015c117c220f2aef750",
     "demo/mark.svg": "ca279c94b62ccf5df356c543db40ec66a5eed4d5392f6cf27c43784a200b8a4c",
     "demo/style.css": "5337d197952215bf8deaeffef3ac8d8b77ede3c9feb0cac131cab95f8caf9edf",
     "examples/timeout/client.py": "95da8c8bbf6bc23a78b7288ff866d0b5d6131ba22b52a889482cb786acf55280",
@@ -25,18 +25,19 @@
     "src/lib.rs": "f979889534117aa5e804b5521257606b6784724065196306e2fb26071c5e7300",
     "src/main.rs": "528aacf1338de380aeb851315a610b9c4b90ae4d2cb5eb21c5543a89b29d19a3",
     "src/model.rs": "22f00fd1a8b756526034f4322d8b035854d9d7a5a8ba1c6f969567d228a35096",
-    "src/mount.rs": "0b3dcafebcf8d65695840f9eee21fe8482beef7742ad27a3290a167b529cfc4c",
+    "src/mount.rs": "22a8aadd1b71b243fe2e90d1fc239a369f0ea4c90b62c717c16804ab2694559c",
     "src/store.rs": "6c112ff19d2bc8ce7718cbae5b8963906168f9973489fa9276e1d095caa0031c",
     "src/transfer.rs": "dc0e3f95099b0d276ce0a3274173ab64f1a209341df1218bb2442beafc313dc0",
-    "tests/fuse_integration.py": "011214f08f50c9f15c43576bd92b48cc0d30ea0a683de3edfe354059a4bfbf5e",
+    "tests/fuse_integration.py": "6bd2a13c49be819948fdcd6cbf76a3a81cb6bccb23eff2c57408f1bd034ff560",
     "tests/serial_oracle.rs": "f73b4c540b5b20ed5474c64bd033e47c26063d12eb939b9583cdf2e3dc7f3c2e",
     "tests/transactions.rs": "616cfb7e2cc7c0e8f4fb9c24972adca34c9c74425927e1fbab6708f213b38f40"
   },
   "evidence": {
-    "docs/evidence/benchmark.json": "0b9c3230610de033a5b43b50b4c8b107f0d9b1d0f16e4b0694a83beac71fc3a5",
-    "docs/evidence/demo.json": "a979ffb5876333f863ac05d283d4eb5c4c3998c8828ed862f356818a7018c94c",
-    "docs/evidence/kernel-tests.json": "01871a1290a5db5107a2794ca6aced85a69e736675732da2d0197a6f67d6017f",
-    "docs/evidence/linux-build.txt": "c972663a05fb195ddd5545f6027db60b046940318d8370368f98a331543224f7",
-    "docs/evidence/rust-macos.txt": "1df4725be3ca1d7799a7808db21245c28c482723cc290ca4a5c225785707be49"
+    "docs/evidence/benchmark.json": "5035dd5ff432f1329bcbcdda1d4a4f2160f04c46d93c5df6f72dc7cc9de6e5c2",
+    "docs/evidence/demo.json": "41ae2244aeff3f00eed00b07636a4f88b793c69cdd75b97695cd50a80976a1d8",
+    "docs/evidence/kernel-tests.json": "30762a8f279a148d224194b5cf8999d376f5e308eafcb7aead7bf13b315f634f",
+    "docs/evidence/linux-build.txt": "7d412e0156c18845e5d17ac1dc6cb44225d0e345d6d90d970ad76b8eb7b1f060",
+    "docs/evidence/rust-macos.txt": "1df4725be3ca1d7799a7808db21245c28c482723cc290ca4a5c225785707be49",
+    "docs/evidence/benchmark-before-cache.json": "0b9c3230610de033a5b43b50b4c8b107f0d9b1d0f16e4b0694a83beac71fc3a5"
   }
 }

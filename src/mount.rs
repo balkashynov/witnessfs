@@ -199,8 +199,10 @@ impl Filesystem for WitnessMount {
         });
         // Observe the whole content on every readable open. Cached reads and mmap
         // are then covered even when the kernel does not issue a FUSE read request.
+        // The exclusive branch lease makes this mount the only writer. Keep the
+        // kernel's coherent data cache across opens; external mutation is excluded.
         match result {
-            Ok(()) => reply.opened(ino, 0),
+            Ok(()) => reply.opened(ino, consts::FOPEN_KEEP_CACHE),
             Err(e) => reply.error(errno(e)),
         }
     }

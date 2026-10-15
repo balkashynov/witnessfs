@@ -159,6 +159,27 @@ class KernelTests(unittest.TestCase):
         w.call("export", out)
         self.assertEqual((out / "file").read_bytes(), b"EDITinal")
 
+    def test_retained_cache_is_coherent_after_writes_and_truncation(self):
+        w = self.workspace({"file": b"a" * 8192})
+        w.branch("cached")
+        with w.mount("cached") as p:
+            self.assertEqual((p / "file").read_bytes(), b"a" * 8192)
+            os.link(p / "file", p / "alias")
+            with open(p / "alias", "r+b", buffering=0) as f:
+                f.seek(4096); f.write(b"z" * 4096); os.fsync(f.fileno())
+            self.assertEqual((p / "file").read_bytes(), b"a" * 4096 + b"z" * 4096)
+            with open(p / "file", "r+b") as f, mmap.mmap(f.fileno(), 0) as m:
+                m[0:4] = b"EDIT"; m.flush()
+            self.assertEqual((p / "alias").read_bytes()[:4], b"EDIT")
+            os.truncate(p / "alias", 3)
+            self.assertEqual((p / "file").read_bytes(), b"EDI")
+            os.truncate(p / "file", 8192)
+            self.assertEqual((p / "alias").read_bytes(), b"EDI" + b"\0" * 8189)
+        # A new mount must reconstruct the same bytes without the old cache.
+        with w.mount("cached") as p:
+            self.assertEqual((p / "file").read_bytes(), b"EDI" + b"\0" * 8189)
+        w.accept("cached")
+
     def test_open_unlink_and_hardlink(self):
         w = self.workspace({"file": b"hello"})
         w.branch("io")

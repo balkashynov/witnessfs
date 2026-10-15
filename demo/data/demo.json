@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "recorded_at": "2026-10-15T18:13:09.386149+00:00",
+  "recorded_at": "2026-10-15T18:22:43.868875+00:00",
   "platform": "Linux-6.10.14-linuxkit-aarch64-with-glibc2.36",
   "execution": "Real Linux FUSE and Git; deterministic scripted tasks, no LLM session.",
   "fixture_sha256": {
@@ -96,7 +96,7 @@
         "stderr": "Traceback (most recent call last):\n  File \"<string>\", line 1, in <module>\nAssertionError: expected 60 seconds, got 0.06\n"
       }
     ],
-    "diff": "a7b5e93 Merge branch 'retry'\n\n retry.json | 1 +\n 1 file changed, 1 insertion(+)\n"
+    "diff": "6e147c7 Merge branch 'retry'\n\n retry.json | 1 +\n 1 file changed, 1 insertion(+)\n"
   },
   "witness": {
     "migrate": [
@@ -174,21 +174,21 @@
       {
         "kind": "metadata",
         "key": "n/0000000000000001",
-        "expected": "001db112b1e0a88c416db05412ef00bd7f443c55300659e85c3ad6b0dcde0de0",
+        "expected": "24af7b6be0b09e4d28d8526ea168085b52be5e2bbfe7a67b3a101c67b334a0b5",
         "path": "/",
         "operation": "stat"
       },
       {
         "kind": "metadata",
         "key": "n/0000000000000002",
-        "expected": "c8bab9dd7c1e27146bd466060c9ad89cf80431438e783ffec5015bf53bd744f8",
+        "expected": "6cfb0ce3f14fda8c63361db07a743af457c03655b2182871f8759effd9d98f97",
         "path": "/client.py",
         "operation": "stat"
       },
       {
         "kind": "metadata",
         "key": "n/0000000000000003",
-        "expected": "7bb4838533aea27ac1e63c7d0f993136f7b65a2129e3eb9256159d467d9e136c",
+        "expected": "3e70074facd57865ba20fa3209b089476288642c2548ff0043a7b9e801effcaf",
         "path": "/config.json",
         "operation": "stat"
       },
@@ -267,10 +267,10 @@
         {
           "kind": "metadata",
           "key": "n/0000000000000003",
-          "expected": "7bb4838533aea27ac1e63c7d0f993136f7b65a2129e3eb9256159d467d9e136c",
+          "expected": "3e70074facd57865ba20fa3209b089476288642c2548ff0043a7b9e801effcaf",
           "path": "/config.json",
           "operation": "stat",
-          "observed": "92b6c422c9398f28daf7f352418015f32a0a47c7057216ab3671db0419beb4f8"
+          "observed": "08f3d1a7ec0ed806b66ccb620dd445b50226ba2b3c8f06ffd266f4f0fdb0df44"
         }
       ]
     },
@@ -478,10 +478,10 @@
           {
             "kind": "metadata",
             "key": "n/0000000000000002",
-            "expected": "bc81027158584e99cff17ae749917f0598ba5949a516d0b695e0ba14b795ee53",
+            "expected": "71a6a70090d82c649f259398c61e99389de2c932272e9482415ad41dee28685b",
             "path": "/config",
             "operation": "stat",
-            "observed": "4597f9025e68fdca73fac6af40bf5308e69a4fe9cd63862aef3c6e7ce7cfc4ab"
+            "observed": "e6422d63caa96a613e00307c1afc2ffdb5d55a3d8c9f369671f0903002c1f9e3"
           }
         ]
       }

@@ -23,6 +23,9 @@ Validation, publication and the receipt share a SQLite FULL/WAL transaction.
 Failed filesystem operations retain their observed inputs without retaining
 their partial writes. Readable-open observations cover cached and mmap reads.
 
+The exclusive mount retains the kernel data cache across opens; every readable
+open still records content before returning.
+
 The companion demo replays actual Linux/Git commands. A timeout drops from 60
 seconds to 60 milliseconds after a clean Git merge. WitnessFS rejects the stale
 branch, names the changed configuration and accepts a fresh corrected rerun.
@@ -30,7 +33,7 @@ The same recording includes absent-path and directory dependencies, independent
 accepted writes and an intentional false rejection from a comment edit.
 
 Verification includes 640 generated transactions against an independent serial
-interpreter, 1,200 file operations against native Linux, 17 mounted tests and
+interpreter, 1,200 file operations against native Linux, 18 mounted tests and
 four forced process kills at acceptance boundaries. The checks establish bounded
 evidence for the implemented contract, not application correctness.
 
@@ -72,11 +75,16 @@ distinctiveness is in that integration and evidence, not priority of invention.
 
 ## Costs and next experiment
 
-In the recorded 10,000-file run, snapshot CLI median was 2.97 ms and import took
-1.12 seconds. Mount/unmount added 21.70 ms. Warm 4 MiB reads took 12.10 ms versus
-0.26 ms natively; 64 KiB replacement plus fsync took 1.14 ms versus 0.38 ms.
+In the recorded 10,000-file run, snapshot CLI median was 3.19 ms and import took
+1.04 seconds. Mount/unmount added 14.89 ms. Warm 4 MiB reads took 0.87 ms versus
+0.29 ms natively; 64 KiB replacement plus fsync took 1.10 ms versus 0.42 ms.
 These are local VM measurements with unmatched storage engines. No distributed
 scaling or production-throughput claim is made.
+
+The earlier implementation discarded its data cache on every open and took
+12.10 ms for the warm read. Retaining the cache, justified by exclusive branch
+ownership and checked with an additional coherence regression, removed much of
+that overhead. Both sets of raw measurements are included.
 
 The most important unanswered question is **false rejection on real agent
 workloads**. A broad search may observe thousands of unrelated inputs. The best

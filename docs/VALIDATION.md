@@ -15,8 +15,9 @@ binary hashes associated with these records.
 - Test containers: network disabled, `/dev/fuse` and `SYS_ADMIN` for the mount.
   No privileged container or live company repository was used.
 - Linux-specific formatting, clippy with warnings denied, compilation and Rust
-  tests passed in the final Docker build. The added lint stage reused the same
-  release binary as the recorded kernel/demo/benchmark run.
+  tests passed in the final Docker build before the recorded kernel, demo and
+  benchmark run. The final cache optimization only changes Linux mounting code;
+  the native macOS core is unchanged from its recorded test run.
 
 ## Correctness evidence
 
@@ -25,7 +26,7 @@ binary hashes associated with these records.
 | Core transaction tests | 8 passed | Write skew, independent writes, namespace dependencies, error rollback, sparse files, object identity, branch leases and concurrent acceptance |
 | Independent serial interpreter | 80 histories / 640 transactions | 406 accepted, 234 rejected; accepted outputs and observations agree with serial application |
 | Blind-composition negative control | 240 changed observations | Shows that the generated inputs actually exercise stale decisions; this is a count of changed observations, not a count of failing applications |
-| Linux kernel suite | 17 passed | Real mount operations, not mocked FUSE callbacks |
+| Linux kernel suite | 18 passed | Real mount operations, not mocked FUSE callbacks |
 | Native filesystem differential | 1,200 seeded operations | Compare errors, content, file mode and file hard-link counts at checkpoints; directory timestamp semantics are deliberately different |
 | Acceptance crash cuts | 4 passed | SIGKILL after versions/head/receipt/commit; all-or-nothing state, integrity and idempotent decision recovery |
 | Demo | Passed all assertions | Clean Git merge breaks the combined retry test; WitnessFS rejects stale work; fresh retry and exported tests pass |
@@ -58,12 +59,12 @@ runs. Earlier development runs varied; these numbers are not guarantees.
 
 | Operation | Samples | 100 files | 10,000 files |
 | --- | ---: | ---: | ---: |
-| WitnessFS snapshot CLI | 25 | 2.28 ms | 2.97 ms |
-| Git detached worktree | 8 | 4.75 ms | 144.56 ms |
-| WitnessFS mount + unmount | 8 | 15.14 ms | 21.70 ms |
-| WitnessFS import | 1 | 21.08 ms | 1,115.30 ms |
-| Git add + first commit | 1 | 12.61 ms | 563.29 ms |
-| Accept one newly written output file | 10 | 2.70 ms | 8.36 ms |
+| WitnessFS snapshot CLI | 25 | 1.90 ms | 3.19 ms |
+| Git detached worktree | 8 | 4.64 ms | 213.03 ms |
+| WitnessFS mount + unmount | 8 | 14.42 ms | 14.89 ms |
+| WitnessFS import | 1 | 23.41 ms | 1,041.14 ms |
+| Git add + first commit | 1 | 12.22 ms | 556.88 ms |
+| Accept one newly written output file | 10 | 2.31 ms | 2.25 ms |
 
 Snapshot creation stores a revision; Git worktree creation materializes files.
 They are **not equivalent completed checkouts**. The comparison exposes that
@@ -73,16 +74,31 @@ and include no retries or concurrent acceptance load.
 
 | I/O operation | Native filesystem | WitnessFS mount | Samples |
 | --- | ---: | ---: | ---: |
-| Read/compare 4 MiB, warm caches | 0.256 ms | 12.104 ms | 25 each |
-| Replace 64 KiB and fsync | 0.382 ms | 1.143 ms | 25 each |
+| Read/compare 4 MiB, warm caches | 0.292 ms | 0.867 ms | 25 each |
+| Replace 64 KiB and fsync | 0.425 ms | 1.104 ms | 25 each |
 
-Warm reads were **47.2x slower** through the mount in this run. Each sample opens,
+Warm reads were **3.0x slower** through the mount in this run. Each sample opens,
 reads, checks equality and closes; both paths are warmed first. A readable open
 records whole-file content even when kernel caching reduces read callbacks.
 Writes use the same 64 KiB random payload and fsync on both paths. The native
 baseline is the container writable filesystem, while WitnessFS is a SQLite
 filesystem on top of it. This is useful end-to-end cost evidence, not an isolated
 FUSE or SQLite microbenchmark and not a matched storage-engine comparison.
+
+### Cache optimization
+
+The first recorded implementation (`3db2521`) invalidated the data cache on each
+open. Its warm 4 MiB read took 12.104 ms versus 0.256 ms natively. The final
+implementation retains that cache with `FOPEN_KEEP_CACHE`, while still recording
+content on every readable open. The per-branch lease excludes another mount or
+CLI writer. This reduced the observed median to 0.867 ms; host timing varies,
+so the roughly 14x reduction is a local before/after result, not a universal
+speedup. [The earlier raw samples](evidence/benchmark-before-cache.json) are kept.
+
+The added regression warms the cache, writes through a hard-link alias, modifies
+a shared mmap, truncates and extends the file, then remounts. Every read must show
+the current bytes. All prior stale-read, mmap, native-differential and crash tests
+also pass with the retained cache.
 
 Ten thousand unique 2 KiB files contain 20,480,000 bytes of source content.
 The initialized WitnessFS directory occupied 59,092,992 logical file bytes,
