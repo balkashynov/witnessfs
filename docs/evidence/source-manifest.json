@@ -6,7 +6,7 @@
   "linux_fault_binary_sha256": "c90680682e1e35a99788e5711e8a790c877a907c5496cb9b0d2f76655b492fc4",
   "source": {
     ".dockerignore": "8a0f300fad1c8c7cffd0ae0f7a7a39f74ed9f79930e5a94cef741b3bd53ffd2f",
-    ".github/workflows/check.yml": "ae09038fc586642fef6b9e9e5afffa9a5721b5853e296d753fd1d47c2ad7cb7e",
+    ".github/workflows/check.yml": "442ef6fd8f82f74fa3c5ea3198ebbfab3f50dde80d92e4f326361293dcdbad49",
     "Cargo.lock": "0fecf4156f3c58105fa31b729b865c73b365ec85ee81995b6d873820fdbd8456",
     "Cargo.toml": "1849f529b8fb6ccbe280a146093b01189e2e36761504c5f66e19f37398d15076",
     "Dockerfile": "33090c473763d4ed936f409d8dbb7115718dbc0d67461707639fa81b41688c9f",
@@ -46,6 +46,7 @@
     "checked_at": "2026-10-16T03:16:40.570137+00:00",
     "scope": "README and demo presentation, public source links, replay/case deep links and static Pages deployment. Core Rust, fixtures, recorded measurements and raw evidence unchanged.",
     "browser_checks": "Five replay steps, four cases, case deep-link reload, desktop and 390px mobile inspected; no console warnings/errors and no inspected mobile page overflow.",
-    "native_core_check": "cargo test --locked --all-targets rerun for publication; see publication record for result."
-  }
+    "native_core_check": "Passed: eight transaction tests, the independent serial oracle, formatting and clippy with warnings denied."
+  },
+  "publication_ci_update": "Initial GitHub run 38844783497 passed both core jobs but its Docker FUSE mounts were denied. Kernel CI now runs the same test suite and demo as the ordinary runner user in the disposable Linux VM. No host security policy is changed. Rust implementation and historical raw evidence are unchanged."
 }

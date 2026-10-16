@@ -21,10 +21,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Enable FUSE
-        run: sudo modprobe fuse
+      - name: Install FUSE and pinned Rust
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y fuse3 gcc pkg-config
+          sudo modprobe fuse
+          rustup toolchain install 1.93.0 --profile minimal
+      - name: Build normal and crash-injection binaries
+        run: |
+          mkdir -p .runs/bin
+          cargo +1.93.0 build --release --locked
+          cp target/release/witnessfs .runs/bin/witnessfs
+          cargo +1.93.0 build --release --locked --features fault-injection
+          cp target/release/witnessfs .runs/bin/witnessfs-fault
       - name: Actual kernel, crash and demo checks
-        run: bash scripts/verify.sh
+        # Run as the ordinary runner user in the disposable Linux VM.
+        # Docker's default AppArmor profile denies mounts on this host.
+        run: |
+          export PATH="$PWD/.runs/bin:$PATH"
+          WITNESS_RESULTS="$PWD/.runs/kernel-tests.json" python3 tests/fuse_integration.py
+          python3 scripts/record_demo.py --output .runs/demo.json
       - uses: actions/upload-artifact@v4
         if: always()
         with:
