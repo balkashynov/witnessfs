@@ -1,6 +1,16 @@
 # WitnessFS
 
-**A clean merge can still be wrong. Remember what the work depended on.**
+**Catch stale assumptions before combining parallel coding work.**
+
+[![Checks](https://github.com/balkashynov/witnessfs/actions/workflows/check.yml/badge.svg)](https://github.com/balkashynov/witnessfs/actions/workflows/check.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-326b4e)](LICENSE)
+
+**[Live demo](https://balkashynov.github.io/witnessfs/)** ·
+[The failure in 30 seconds](https://balkashynov.github.io/witnessfs/#replay-3) ·
+[Engineering brief](docs/ENGINEERING-BRIEF.md) ·
+[Measurements and limits](docs/VALIDATION.md)
+
+[![Two passing tasks, one clean merge, one stale assumption. WitnessFS catches the dependency before accepting the work.](docs/overview.svg)](https://balkashynov.github.io/witnessfs/)
 
 WitnessFS is an experimental Rust filesystem for parallel coding workspaces.
 Ordinary programs run in isolated Linux FUSE mounts. It records the file bytes,
@@ -21,10 +31,20 @@ branch reads the new unit, writes `60000`, and passes the combined tests.
 This is a deterministic scripted example executed against real Git and FUSE,
 not a recorded LLM session or an upstream production defect.
 
-**[Interactive evidence replay](demo/index.html)** ·
-**[Design and prior art](docs/DESIGN.md)** ·
-**[Correctness argument](docs/CORRECTNESS.md)** ·
-**[Validation and measurements](docs/VALIDATION.md)**
+## Where it fits
+
+Use it to experiment with parallel agent workspaces whose changes depend on
+files they do not edit. Accepted source exports into your existing Git review
+and CI workflow. Git remains the version-control system; WitnessFS adds an
+observed-dependency check before integration.
+
+The tradeoff is conservative rejection and extra I/O. A harmless comment change
+can invalidate a whole-file read, and a broad search can make a large part of the
+repository a dependency. Real coding-agent workloads have not yet been evaluated.
+
+[Design and prior art](docs/DESIGN.md) ·
+[Exact correctness contract](docs/CORRECTNESS.md) ·
+[Recorded commands and receipts](docs/evidence/demo.json)
 
 ## Run the demonstration
 
@@ -32,6 +52,8 @@ Requires Docker with Linux FUSE support. On macOS, Docker Desktop supplies the
 Linux kernel. Run from this repository:
 
 ```sh
+git clone https://github.com/balkashynov/witnessfs.git
+cd witnessfs
 docker build -t witnessfs-dev:local .
 mkdir -p .runs
 docker run --rm --network none --device /dev/fuse --cap-add SYS_ADMIN \

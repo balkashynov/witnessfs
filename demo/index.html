@@ -8,6 +8,11 @@
       content="WitnessFS: a Rust filesystem that remembers what parallel agents read, then checks those assumptions before accepting their work."
     />
     <meta name="theme-color" content="#f4f1e9" />
+    <meta property="og:title" content="WitnessFS: a clean merge can still be wrong" />
+    <meta property="og:description" content="A Rust filesystem experiment that catches stale dependencies behind a clean Git merge. Inspect the recorded failure, rejection and corrected rerun." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://balkashynov.github.io/witnessfs/" />
+    <link rel="canonical" href="https://balkashynov.github.io/witnessfs/" />
     <title>WitnessFS · Remember what the work depended on</title>
     <link rel="icon" href="mark.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="style.css" />
@@ -23,7 +28,7 @@
       <nav aria-label="Main">
         <a href="#replay">The failure</a><a href="#engineering">The system</a
         ><a href="#measurements">The cost</a
-        ><a href="../README.md">Source guide ↗</a>
+        ><a href="https://github.com/balkashynov/witnessfs">GitHub ↗</a>
       </nav>
     </header>
     <main>
@@ -35,18 +40,28 @@
         <h1>A clean merge<br />can still be <em>wrong.</em></h1>
         <div class="hero-bottom">
           <p>
-            Two agents. Two passing tests. Different files.<br />One assumption
+            Two coding tasks. Two passing tests. Different files.<br />One assumption
             that stopped being true.
           </p>
           <p class="intro">
-            WitnessFS remembers what a workspace read, including what
-            <em>wasn't there</em>. Before accepting its writes, it checks that
-            those facts still hold.
+            A Rust filesystem that catches stale inputs before combining
+            parallel coding work. It remembers what each workspace read,
+            including what <em>wasn't there</em>, and checks those facts
+            before accepting its writes.
           </p>
         </div>
-        <a class="primary" href="#replay">Watch the failure <span>↓</span></a>
+        <div class="hero-actions">
+          <a class="primary" href="#replay">Explore the failure <span>↓</span></a>
+          <a class="source-link" href="https://github.com/balkashynov/witnessfs">Read the source ↗</a>
+        </div>
         <div class="stack">
           RUST <span>·</span> LINUX FUSE <span>·</span> OPTIMISTIC TRANSACTIONS
+        </div>
+        <div class="result-strip" aria-label="Demonstrated result">
+          <div><span>INTENDED RETRY</span><strong>60 seconds</strong></div>
+          <span class="result-arrow" aria-hidden="true">→</span>
+          <div><span>AFTER A CLEAN GIT MERGE</span><strong class="failure-value">0.06 seconds</strong></div>
+          <div class="result-catch"><span>WITH DEPENDENCY VALIDATION</span><strong>Stale read caught</strong></div>
         </div>
       </section>
 
@@ -265,7 +280,7 @@ Loading recorded evidence…</pre
           Bounded tests, not a formal proof. Snapshot creation copies no file
           content; versioned inodes, namespace entries and content-addressed
           chunks live in SQLite.
-          <a href="../docs/CORRECTNESS.md">Read the correctness argument ↗</a>
+          <a href="https://github.com/balkashynov/witnessfs/blob/main/docs/CORRECTNESS.md">Read the correctness argument ↗</a>
         </p>
       </section>
 
@@ -344,7 +359,7 @@ Loading recorded evidence…</pre
           <p>
             Optimistic transactions and transactional filesystems have decades
             of prior art.
-            <a href="../docs/DESIGN.md">Zit, BranchFS, AgentFS and others</a>
+            <a href="https://github.com/balkashynov/witnessfs/blob/main/docs/DESIGN.md">Zit, BranchFS, AgentFS and others</a>
             inform the comparison. WitnessFS explores transparent filesystem
             observations and a testable acceptance boundary.
           </p>
@@ -359,7 +374,7 @@ Loading recorded evidence…</pre
             and raw timing samples.
           </p>
         </div>
-        <a class="primary" href="../README.md#run-the-demonstration"
+        <a class="primary" href="https://github.com/balkashynov/witnessfs#run-the-demonstration"
           >Open the runbook ↗</a
         >
       </section>

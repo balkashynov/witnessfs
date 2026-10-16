@@ -10,10 +10,10 @@
     "Cargo.lock": "0fecf4156f3c58105fa31b729b865c73b365ec85ee81995b6d873820fdbd8456",
     "Cargo.toml": "1849f529b8fb6ccbe280a146093b01189e2e36761504c5f66e19f37398d15076",
     "Dockerfile": "33090c473763d4ed936f409d8dbb7115718dbc0d67461707639fa81b41688c9f",
-    "demo/app.js": "48119369c6a1f87d30fa86b1809adde31204c81482261cbfb7749fff570210a8",
-    "demo/index.html": "f8dc54de706d40309e7f4473951a2a8d72fdef3688740015c117c220f2aef750",
+    "demo/app.js": "4b96b5ce63cce47b225ae98e751c9c3794c7cd09e951e1a4a6c0087b19246b3e",
+    "demo/index.html": "8940bfd85be855471209ad5ed4f4ff8c2db003d418b2f3a199519caea259d5ea",
     "demo/mark.svg": "ca279c94b62ccf5df356c543db40ec66a5eed4d5392f6cf27c43784a200b8a4c",
-    "demo/style.css": "5337d197952215bf8deaeffef3ac8d8b77ede3c9feb0cac131cab95f8caf9edf",
+    "demo/style.css": "899c8c0f119337ccdb04a009beeca5933c10aad46a962c7d9572fabbb0476580",
     "examples/timeout/client.py": "95da8c8bbf6bc23a78b7288ff866d0b5d6131ba22b52a889482cb786acf55280",
     "examples/timeout/config.json": "842c8b360c978478cca5a3b3d8e3e7dbfd358a4244d20db5ac383ad42c0d4c30",
     "examples/timeout/task_migrate.py": "f185845cec5b3e6d5c5626f46d466e9d8117b7e30bd897193badf1e4a03a8cf3",
@@ -30,7 +30,9 @@
     "src/transfer.rs": "dc0e3f95099b0d276ce0a3274173ab64f1a209341df1218bb2442beafc313dc0",
     "tests/fuse_integration.py": "6bd2a13c49be819948fdcd6cbf76a3a81cb6bccb23eff2c57408f1bd034ff560",
     "tests/serial_oracle.rs": "f73b4c540b5b20ed5474c64bd033e47c26063d12eb939b9583cdf2e3dc7f3c2e",
-    "tests/transactions.rs": "616cfb7e2cc7c0e8f4fb9c24972adca34c9c74425927e1fbab6708f213b38f40"
+    "tests/transactions.rs": "616cfb7e2cc7c0e8f4fb9c24972adca34c9c74425927e1fbab6708f213b38f40",
+    "docs/overview.svg": "62a27fc99601c271fe8f954be07ee87a58733783e0e5f56e1a15f73876307555",
+    ".github/workflows/pages.yml": "ffaeada496382b18b8b742c0973f2f2c22aab29bfb5dc29b0d35e1e7ef976248"
   },
   "evidence": {
     "docs/evidence/benchmark.json": "5035dd5ff432f1329bcbcdda1d4a4f2160f04c46d93c5df6f72dc7cc9de6e5c2",
@@ -39,5 +41,11 @@
     "docs/evidence/linux-build.txt": "7d412e0156c18845e5d17ac1dc6cb44225d0e345d6d90d970ad76b8eb7b1f060",
     "docs/evidence/rust-macos.txt": "1df4725be3ca1d7799a7808db21245c28c482723cc290ca4a5c225785707be49",
     "docs/evidence/benchmark-before-cache.json": "0b9c3230610de033a5b43b50b4c8b107f0d9b1d0f16e4b0694a83beac71fc3a5"
+  },
+  "presentation_refresh": {
+    "checked_at": "2026-10-16T03:16:40.570137+00:00",
+    "scope": "README and demo presentation, public source links, replay/case deep links and static Pages deployment. Core Rust, fixtures, recorded measurements and raw evidence unchanged.",
+    "browser_checks": "Five replay steps, four cases, case deep-link reload, desktop and 390px mobile inspected; no console warnings/errors and no inspected mobile page overflow.",
+    "native_core_check": "cargo test --locked --all-targets rerun for publication; see publication record for result."
   }
 }

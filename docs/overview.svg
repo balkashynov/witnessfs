@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="460" viewBox="0 0 1200 460" role="img" aria-labelledby="title desc">
+  <title id="title">A clean merge can still be wrong</title>
+  <desc id="desc">Task A changes seconds to milliseconds. Task B writes a 60-second retry. Git merges without conflict but produces a 60-millisecond retry. WitnessFS rejects the stale configuration read and accepts a fresh rerun.</desc>
+  <rect width="1200" height="460" rx="12" fill="#f4f1e9"/>
+  <g font-family="Arial, Helvetica, sans-serif" fill="#252721">
+    <text x="48" y="49" font-size="13" letter-spacing="2" fill="#696b63">WITNESSFS / OBSERVED WORKSPACE DEPENDENCIES</text>
+    <text x="48" y="113" font-family="Georgia, serif" font-size="48">A clean merge can still be <tspan fill="#b74125" font-style="italic">wrong.</tspan></text>
+    <rect x="48" y="151" width="533" height="103" rx="5" fill="#fffdf7" stroke="#d6d5ca"/>
+    <rect x="619" y="151" width="533" height="103" rx="5" fill="#fffdf7" stroke="#d6d5ca"/>
+    <text x="70" y="182" font-size="12" letter-spacing="1" fill="#326b4e">TASK A / TEST PASSES</text>
+    <text x="70" y="222" font-size="23">config.json: seconds → milliseconds</text>
+    <text x="641" y="182" font-size="12" letter-spacing="1" fill="#326b4e">TASK B / TEST PASSES</text>
+    <text x="641" y="222" font-size="23">retry.json: timeout = 60</text>
+    <path d="M314 254v25H886v-25M600 279v24" fill="none" stroke="#aaa99f" stroke-width="2"/>
+    <rect x="48" y="304" width="533" height="105" rx="5" fill="#f1ddd4"/>
+    <rect x="619" y="304" width="533" height="105" rx="5" fill="#dfe9dd"/>
+    <text x="70" y="336" font-size="12" letter-spacing="1" fill="#9c351d">GIT / CLEAN MERGE</text>
+    <text x="70" y="378" font-size="29" fill="#9c351d">60 seconds becomes 60 ms</text>
+    <text x="641" y="336" font-size="12" letter-spacing="1" fill="#326b4e">WITNESSFS / STALE READ REJECTED</text>
+    <text x="641" y="378" font-size="25" fill="#326b4e">Check the input. Rerun with 60000.</text>
+    <text x="48" y="440" font-size="12" fill="#696b63">Reproduced with real Git and Linux FUSE. Scripted tasks. Interactive recording and source included.</text>
+  </g>
+</svg>

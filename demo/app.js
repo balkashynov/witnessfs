@@ -156,7 +156,7 @@ const cases = {
     "The task only uses the first line of a file. Another task edits a comment. Whole-file observation rejects it anyway. This is a real false rejection, and an intentional precision tradeoff.",
   ],
 };
-function showCase(id) {
+function showCase(id, updateHash = true, scroll = false) {
   if (!data) return;
   const c = data.cases.find((c) => c.id === id),
     [title, description] = cases[id];
@@ -183,6 +183,17 @@ function showCase(id) {
     .forEach((b) =>
       b.setAttribute("aria-pressed", String(b.dataset.case === id)),
     );
+  if (updateHash) history.replaceState(null, "", `#case-${id}`);
+  if (scroll)
+    document.querySelector(".case-heading").scrollIntoView({ block: "start" });
+}
+
+function restoreLocation() {
+  const replay = location.hash.match(/^#replay-([1-5])$/);
+  const caseId = location.hash.slice("#case-".length);
+  if (replay) showStep(Number(replay[1]) - 1, true, false);
+  else if (location.hash.startsWith("#case-") && Object.hasOwn(cases, caseId))
+    showCase(caseId, false, true);
 }
 function chart(id, rows) {
   const root = $(id),
@@ -250,6 +261,7 @@ document
   .forEach((b) => b.addEventListener("click", () => showCase(b.dataset.case)));
 $("previous").addEventListener("click", () => showStep(step - 1));
 $("next").addEventListener("click", () => showStep(step === 4 ? 0 : step + 1));
+window.addEventListener("hashchange", restoreLocation);
 Promise.all(
   ["demo", "benchmark", "kernel-tests"].map(async (name) => {
     const r = await fetch(`data/${name}.json`);
@@ -266,13 +278,14 @@ Promise.all(
       2,
     );
     $("kernel-count").textContent = k.tests.length;
-    const match = location.hash.match(/^#replay-([1-5])$/);
-    showStep(match ? Number(match[1]) - 1 : 0, Boolean(match), Boolean(match));
-    showCase("missing-path");
+    showStep(0, false, false);
+    showCase("missing-path", false);
     showBenchmarks();
+    restoreLocation();
   })
   .catch((e) => {
     $("load-error").hidden = false;
     $("load-error").textContent =
-      `Evidence could not load. Serve the repository with python3 -m http.server and open /demo/. ${e.message}`;
+      `The recorded evidence could not load. Reload this page to try again. For a local copy, serve the demo directory with python3 -m http.server. ${e.message}`;
+    document.querySelectorAll("button").forEach((button) => { button.disabled = true; });
   });
