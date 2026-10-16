@@ -46,3 +46,5 @@ jobs:
         with:
           name: linux-evidence
           path: .runs/*.json
+          include-hidden-files: true
+          if-no-files-found: error

@@ -1,8 +1,8 @@
 # Validation record
 
 Recorded 2026-10-15. The implementation is an experimental local filesystem.
-No production deployment, Anthropic integration, hosted CI run or external
-adopter result is claimed. See `evidence/source-manifest.json` for the source and
+No production deployment, Anthropic integration or external adopter result is
+claimed. See the hosted-check update below and `evidence/source-manifest.json` for the source and
 binary hashes associated with these records.
 
 ## Environment
@@ -126,8 +126,30 @@ records the demo; `--benchmark` adds measurements. Outputs go into ignored
 change. Repeated demo runs should preserve outcomes, conflict kinds and paths;
 metadata hashes can differ because real filesystem timestamps are used.
 
-The included GitHub Actions workflow has not been run on GitHub. Local execution
-establishes the results above, not availability on every hosted runner.
+## Hosted checks and public presentation
+
+Published 2026-10-15 (America/Edmonton):
+[source](https://github.com/balkashynov/witnessfs) and
+[interactive recorded demo](https://balkashynov.github.io/witnessfs/).
+
+[GitHub Actions run 38845047351](https://github.com/balkashynov/witnessfs/actions/runs/38845047351)
+passed at `a06b6a9973b623fa2b8c0e0e9d4f103caa22191f`: Rust formatting,
+clippy and tests on macOS and Ubuntu, plus all 18 actual Linux FUSE tests,
+the four acceptance crash cuts and the scripted Git/failure/recovery demo.
+The kernel suite runs as the ordinary runner user in GitHub's disposable Linux
+VM. The first Docker-based hosted attempt was denied permission to mount;
+the native runner path avoids changing host security policy.
+
+This adds hosted Linux x86_64 correctness evidence. The published timing samples
+remain the original local ARM64 measurements above; they were not replaced with
+CI timings. The later artifact-upload correction includes only `.runs/*.json`
+from the hidden results directory. Private notes and contacts are excluded.
+
+The public README, source links, five replay steps, four secondary cases,
+reloadable step/case links, desktop and 390px phone layouts were checked.
+The deployed HTML, JavaScript, CSS, icon and three JSON records matched the local
+files byte for byte. An isolated missing-data preview showed the error notice
+and disabled replay controls. The valid public demo produced no console errors.
 
 ## Browser verification
 
